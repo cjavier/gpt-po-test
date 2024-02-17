@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: API de Transacciones Bancarias
+  description: Una API para registrar y recuperar transacciones bancarias.
+  version: "1.0"
+servers:
+  - url: 'https://gpt-contador.onrender.com'
+    description: Entorno de producción
+paths:
+  /registrar-transacciones:
+    post:
+      summary: Registrar múltiples transacciones
+      description: Registra múltiples transacciones bancarias usando una sola función.
+      operationId: registerTransactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transactions'
+      responses:
+        '200':
+          description: Transacciones registradas con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /datos-por-fecha:
+    post:
+      summary: Recuperar transacciones por rango de fechas
+      description: Recupera transacciones bancarias basadas en un rango de fechas.
+      operationId: getTransactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fechaInicial:
+                  type: string
+                  format: date
+                  description: La fecha de inicio del rango de búsqueda.
+                fechaFinal:
+                  type: string
+                  format: date
+                  description: La fecha de fin del rango de búsqueda.
+              required:
+                - fechaInicial
+                - fechaFinal
+      responses:
+        '200':
+          description: Transacciones recuperadas con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prompt:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionDetails'
+components:
+  schemas:
+    Transactions:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionDetails'
+      required:
+        - transactions
+    TransactionDetails:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: La fecha de la transacción
+        description:
+          type: string
+          description: La descripción de la transacción
+        amount:
+          type: number
+          description: El monto de la transacción (positivo para ingresos, negativo para gastos)
+      required:
+        - date
+        - description
+        - amount

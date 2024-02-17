@@ -73,10 +73,12 @@ function registerTransactions(transactions) {
     return new Promise((resolve, reject) => {
         // Ajustar la fecha final para incluir el día completo
         let fechaFinalObj = new Date(fechaFinal);
+        let fechaInicialObj = new Date(fechaInicial);
         fechaFinalObj.setDate(fechaFinalObj.getDate() + 1);
+        fechaInicialObj.setDate(fechaInicialObj.getDate() - 1);
+        let fechaInicialAjustada = fechaInicialObj.toISOString().split('T')[0];
         let fechaFinalAjustada = fechaFinalObj.toISOString().split('T')[0];
-
-        const filterByFormula = `AND(IS_AFTER({Fecha de Transacción}, '${fechaInicial}'), IS_BEFORE({Fecha de Transacción}, '${fechaFinalAjustada}'))`;
+        const filterByFormula = `AND(IS_AFTER({Fecha de Transacción}, '${fechaInicialAjustada}'), IS_BEFORE({Fecha de Transacción}, '${fechaFinalAjustada}'))`;
 
         console.log(`Fórmula de Filtro: ${filterByFormula}`);
 
